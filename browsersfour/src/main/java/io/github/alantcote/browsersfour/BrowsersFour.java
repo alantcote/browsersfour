@@ -3,6 +3,8 @@ package io.github.alantcote.browsersfour;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
+import io.github.alantcote.browsersfour.settings.CategoryTreeItem;
+import io.github.alantcote.browsersfour.settings.SettingsDialog;
 import io.github.alantcote.clutilities.javafx.windowprefs.WindowPrefs;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
@@ -25,7 +27,7 @@ public class BrowsersFour extends Application {
 			String url = idleRandomFavorite();
 
 			if (url != null) {
-				System.err.println("Updater: loading " + url);
+//				System.err.println("Updater: loading " + url);
 				
 				browser[browserIndex++].load(url);
 			}
@@ -51,6 +53,7 @@ public class BrowsersFour extends Application {
 	protected Preferences appPrefs = null;
 	protected BrowserPanel[] browser = new BrowserPanel[BROWSER_COUNT];
 	protected FavoritesManager favoritesManager = null;
+	protected Stage b4Stage;
 	protected Ticker ticker = new Ticker(new Updater(), UPDATE_PERIOD);
 	protected WindowPrefs windowPrefs = null;
 
@@ -65,12 +68,15 @@ public class BrowsersFour extends Application {
 
 		return appPrefs;
 	}
+	protected Stage stage;
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public void start(Stage primaryStage) {
+		b4Stage = primaryStage;
+		
 		try {
 			GridPane gridPane = inizBrowserPanels();
 			BorderPane root = new BorderPane();
@@ -109,8 +115,33 @@ public class BrowsersFour extends Application {
 		Menu menu = new Menu("Edit");
 		
 		menu.getItems().add(createFavoritesItem());
+		menu.getItems().add(createSettingsItem());
 		
 		return menu;
+	}
+	
+	protected MenuItem createSettingsItem() {
+		MenuItem menuItem = new MenuItem("Settings");
+		
+		menuItem.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				CategoryTreeItem root = CategoryTreeItem.createRootItem();
+				FavoritesCategory favesCat = new FavoritesCategory(windowPrefs.getPrefs());
+				CategoryTreeItem favesItem = favesCat.newTreeItem();
+				
+				root.getChildCategories().add(favesItem);
+				
+				SettingsDialog dialog = new SettingsDialog(root);
+				
+				dialog.initOwner(b4Stage);
+				dialog.showAndWait();
+			}
+			
+		});
+		
+		return menuItem;
 	}
 	
 	protected MenuItem createFavoritesItem() {

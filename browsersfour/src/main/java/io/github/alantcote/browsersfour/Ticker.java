@@ -17,7 +17,7 @@ public class Ticker extends AnimationTimer {
 	/**
 	 * Construct a new object.
 	 * @param aRunnable object to be run in the JavaFX thread on ticks.
-	 * @param period the number of milliseconds between ticks.
+	 * @param aPeriod the number of milliseconds between ticks.
 	 */
 	public Ticker(Runnable aRunnable, long aPeriod) {
 		super();
