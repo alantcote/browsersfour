@@ -40,7 +40,7 @@ public class SettingsPane extends BorderPane {
 		applyButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				if (editor != null) {
+				if ((editor != null) && editor.isDirty()) {
 					editor.commit();
 				}
 			}
@@ -77,7 +77,9 @@ public class SettingsPane extends BorderPane {
 		revertButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				if (editor != null) {
+//				System.out.println("SettingsPane.createRevertButton().handle(): editor = " + editor);
+				
+				if ((editor != null) && editor.isDirty()) {
 					editor.reset();
 				}
 			}
@@ -87,23 +89,16 @@ public class SettingsPane extends BorderPane {
 	protected void createTreeView() {
 		categoryTreeView = new CategoryTreeView(rootItem);
 
-//		categoryTreeView.setShowRoot(false);
-//		categoryTreeView.setCellFactory(new CategoryTreeCellFactory());
-//		categoryTreeView.setEditable(true);
-//		categoryTreeView.setPrefHeight(USE_COMPUTED_SIZE);
 		MultipleSelectionModel<TreeItem<Category>> selModel = categoryTreeView.getSelectionModel();
-//		
-//		selModel.selectionModeProperty().set(SelectionMode.MULTIPLE);
-//		selModel.selectionModeProperty().set(SelectionMode.SINGLE);
-//		
+		
 		selectedItemProperty = selModel.selectedItemProperty();
-
 		selectedItemProperty.addListener(new ChangeListener<TreeItem<Category>>() {
 
 			@Override
 			public void changed(ObservableValue<? extends TreeItem<Category>> observable, TreeItem<Category> oldValue,
 					TreeItem<Category> newValue) {
-				detailsPane.setCenter(newValue.getValue().getEditor());
+				editor = newValue.getValue().getEditor();
+				detailsPane.setCenter(editor);
 			}
 			
 		});

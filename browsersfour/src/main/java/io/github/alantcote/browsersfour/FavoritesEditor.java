@@ -10,6 +10,7 @@ import java.util.prefs.Preferences;
 import io.github.alantcote.browsersfour.settings.Editor;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -58,20 +59,34 @@ public class FavoritesEditor extends Editor {
 			}
 		});
 
+		editingFavorites.addListener(new ListChangeListener<String>() {
+
+			@Override
+			public void onChanged(Change<? extends String> c) {
+				setDirty(!(editingFavorites.containsAll(favorites) && favorites.containsAll(editingFavorites)));
+				
+//				System.out.println("FavoritesEditor: isDirty() = " + isDirty());
+			}
+
+		});
+
 		setCenter(createScrollableListView());
 	}
 
 	@Override
 	public boolean commit() {
-		updateFavoritesPrefs();
+		System.out.println("FavoritesEditor.commit(): entry");
 		
+		updateFavoritesPrefs();
+
 		return true;
 	}
 
 	@Override
 	public void reset() {
-		editingFavorites.clear();
-		editingFavorites.addAll(favorites);
+		System.out.println("FavoritesEditor.reset(): entry");
+		
+		updateFavorites();
 	}
 
 	protected MenuItem createAddFavoriteMenuItem() {
@@ -194,6 +209,8 @@ public class FavoritesEditor extends Editor {
 
 		favorites.clear();
 		favorites.addAll(urlArrayList);
+		editingFavorites.clear();
+		editingFavorites.addAll(favorites);
 	}
 
 	protected void updateFavoritesPrefs() {
@@ -202,7 +219,7 @@ public class FavoritesEditor extends Editor {
 		try {
 			favoritesPrefs.clear();
 
-			for (String fave : favorites) {
+			for (String fave : editingFavorites) {
 				String key = URL_PREF_KEY_PREFIX + index;
 
 				favoritesPrefs.put(key, fave);
