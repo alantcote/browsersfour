@@ -3,10 +3,10 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>cotelab</groupId>
-	<artifactId>dupfilefinder2</artifactId>
+	<artifactId>browsersfour</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	<description>A program to seek out duplicate files and directories.</description>
+	<description>A program to display and update 4 browsers periodically.</description>
 
 	<name>${project.groupId}:${project.artifactId}</name>
 	<url>https://github.com/alantcote/${project.artifactId}</url>

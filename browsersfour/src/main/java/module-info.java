@@ -10,4 +10,5 @@ module alantcote.browsersfour {
     opens io.github.alantcote.browsersfour to javafx.fxml;
     
     exports io.github.alantcote.browsersfour;
+    exports io.github.alantcote.browsersfour.settings;
 }
