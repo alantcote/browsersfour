@@ -1,7 +1,5 @@
 package io.github.alantcote.browsersfour;
 
-import java.util.prefs.Preferences;
-
 import io.github.alantcote.browsersfour.settings.Category;
 import io.github.alantcote.browsersfour.settings.CategoryTreeItem;
 import io.github.alantcote.browsersfour.settings.Editor;
@@ -11,20 +9,20 @@ import io.github.alantcote.browsersfour.settings.Editor;
  */
 public class FavoritesCategory implements Category {
 	public static final String CATEGORY_NAME = "Favorites";
-	protected Preferences appPrefs;
+	protected Favorites favorites;
 
 	/**
 	 * Construct a new object.
 	 * 
-	 * @param appPrefs the application's {@link Preferences} node.
+	 * @param faves the application's {@link Favorites} object.
 	 */
-	public FavoritesCategory(Preferences appPrefs) {
-		this.appPrefs = appPrefs;
+	public FavoritesCategory(Favorites faves) {
+		favorites = faves;
 	}
 
 	@Override
 	public Editor getEditor() {
-		return new FavoritesEditor(appPrefs);
+		return new FavoritesEditor(favorites);
 	}
 
 	@Override

@@ -35,28 +35,31 @@ public class FavoritesEditor extends Editor {
 
 	protected ObservableList<String> favorites = FXCollections.observableArrayList();
 
-	protected Preferences favoritesPrefs = null;
+	protected Favorites favoritesModel = null;
+	
+	protected boolean savingFavorites = false;
 
 	/**
-	 * 
+	 * Construct a new object.
+	 * @param model the favorites model.
 	 */
-	public FavoritesEditor(Preferences appPrefs) {
+	public FavoritesEditor(Favorites model) {
 		super();
 
-		favoritesPrefs = appPrefs.node(FAVORITES_PREF_PATH);
+		favoritesModel = model;
+		favorites = model.getFavorites();
 
 		updateFavorites();
 
-		favoritesPrefs.addPreferenceChangeListener(new PreferenceChangeListener() {
+		favorites.addListener(new ListChangeListener<String>() {
+
 			@Override
-			public void preferenceChange(PreferenceChangeEvent evt) {
-				Platform.runLater(new Runnable() {
-					@Override
-					public void run() {
-						updateFavorites();
-					}
-				});
+			public void onChanged(Change<? extends String> c) {
+				if (!savingFavorites) {
+					updateFavorites();
+				}
 			}
+
 		});
 
 		editingFavorites.addListener(new ListChangeListener<String>() {
@@ -64,8 +67,6 @@ public class FavoritesEditor extends Editor {
 			@Override
 			public void onChanged(Change<? extends String> c) {
 				setDirty(!(editingFavorites.containsAll(favorites) && favorites.containsAll(editingFavorites)));
-				
-//				System.out.println("FavoritesEditor: isDirty() = " + isDirty());
 			}
 
 		});
@@ -79,6 +80,8 @@ public class FavoritesEditor extends Editor {
 		
 		updateFavoritesPrefs();
 
+		System.out.println("FavoritesEditor.commit(): exit");
+		
 		return true;
 	}
 
@@ -185,52 +188,20 @@ public class FavoritesEditor extends Editor {
 	}
 
 	protected void updateFavorites() {
-		if (favoritesPrefs == null) {
-			return;
-		}
-
-		ArrayList<String> urlArrayList = new ArrayList<String>();
-		int index = 0;
-
-		while (true) {
-			String key = URL_PREF_KEY_PREFIX + index;
-			String url = favoritesPrefs.get(key, DEFAULT_FAVORITE);
-
-			if (DEFAULT_FAVORITE.equals(url)) {
-				break;
-			}
-
-			urlArrayList.add(url);
-
-			++index;
-		}
-
-		Collections.sort(urlArrayList);
-
-		favorites.clear();
-		favorites.addAll(urlArrayList);
 		editingFavorites.clear();
 		editingFavorites.addAll(favorites);
 	}
 
 	protected void updateFavoritesPrefs() {
-		int index = 0;
+		System.out.println("FavoritesEditor.updateFavoritesPrefs(): entry");
+		savingFavorites = true;
+		
+		Collections.sort(editingFavorites);
+		
+		favorites.clear();
+		favorites.addAll(editingFavorites);
 
-		try {
-			favoritesPrefs.clear();
-
-			for (String fave : editingFavorites) {
-				String key = URL_PREF_KEY_PREFIX + index;
-
-				favoritesPrefs.put(key, fave);
-
-				++index;
-			}
-
-			favoritesPrefs.sync();
-		} catch (BackingStoreException e) {
-			System.err.println("FavoritesManager.updateFavoritesPrefs(): caught: " + e.getMessage());
-			e.printStackTrace();
-		}
+		savingFavorites = false;
+		System.out.println("FavoritesEditor.updateFavoritesPrefs(): exit");
 	}
 }

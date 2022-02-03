@@ -52,7 +52,7 @@ public class BrowsersFour extends Application {
 
 	protected Preferences appPrefs = null;
 	protected BrowserPanel[] browser = new BrowserPanel[BROWSER_COUNT];
-	protected FavoritesManager favoritesManager = null;
+	protected Favorites favorites = null;
 	protected Stage b4Stage;
 	protected Ticker ticker = new Ticker(new Updater(), UPDATE_PERIOD);
 	protected WindowPrefs windowPrefs = null;
@@ -91,6 +91,8 @@ public class BrowsersFour extends Application {
 
 			try {
 				windowPrefs = new WindowPrefs(BrowsersFour.class, primaryStage);
+				
+				appPrefs = windowPrefs.getPrefs();
 			} catch (BackingStoreException e) {
 				System.err.println("PathTreeViewDemo.start(): caught: " + e.getMessage());
 				e.printStackTrace();
@@ -99,7 +101,7 @@ public class BrowsersFour extends Application {
 
 			stageShow(primaryStage);
 
-			favoritesManager = new FavoritesManager(windowPrefs.getPrefs());
+			favorites = new Favorites(windowPrefs.getPrefs());
 
 			for (int i = 0; i < BROWSER_COUNT; ++i) {
 				browser[i].load(idleRandomFavorite());
@@ -114,7 +116,7 @@ public class BrowsersFour extends Application {
 	protected Menu createEditMenu() {
 		Menu menu = new Menu("Edit");
 		
-		menu.getItems().add(createFavoritesItem());
+//		menu.getItems().add(createFavoritesItem());
 		menu.getItems().add(createSettingsItem());
 		
 		return menu;
@@ -128,7 +130,7 @@ public class BrowsersFour extends Application {
 			@Override
 			public void handle(ActionEvent event) {
 				CategoryTreeItem root = CategoryTreeItem.createRootItem();
-				FavoritesCategory favesCat = new FavoritesCategory(windowPrefs.getPrefs());
+				FavoritesCategory favesCat = new FavoritesCategory(favorites);
 				CategoryTreeItem favesItem = favesCat.newTreeItem();
 				
 				root.getChildCategories().add(favesItem);
@@ -144,22 +146,22 @@ public class BrowsersFour extends Application {
 		return menuItem;
 	}
 	
-	protected MenuItem createFavoritesItem() {
-		MenuItem menuItem = new MenuItem("Favorites");
-		
-		menuItem.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				ticker.stop();
-				favoritesManager.edit();
-				ticker.start();
-			}
-			
-		});
-		
-		return menuItem;
-	}
+//	protected MenuItem createFavoritesItem() {
+//		MenuItem menuItem = new MenuItem("Favorites");
+//		
+//		menuItem.setOnAction(new EventHandler<ActionEvent>() {
+//
+//			@Override
+//			public void handle(ActionEvent event) {
+//				ticker.stop();
+//				favorites.edit();
+//				ticker.start();
+//			}
+//			
+//		});
+//		
+//		return menuItem;
+//	}
 	
 	protected MenuBar createMenuBar() {
 		MenuBar menuBar = new MenuBar();
@@ -180,15 +182,15 @@ public class BrowsersFour extends Application {
 	 */
 	protected String idleRandomFavorite() {
 		String result = null;
-		ObservableList<String> favorites = favoritesManager.getFavorites();
-		int urlCount = favorites.size();
+		ObservableList<String> faves = favorites.getFavorites();
+		int urlCount = faves.size();
 		boolean inUse = false;
 
 		if (urlCount > 0) {
 			do {
 				int chosen = (int) (Math.random() * urlCount);
 
-				result = favorites.get(chosen);
+				result = faves.get(chosen);
 				inUse = false;
 
 				if (urlCount > BROWSER_COUNT) {
