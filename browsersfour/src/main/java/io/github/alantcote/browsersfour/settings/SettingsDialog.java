@@ -30,5 +30,6 @@ public class SettingsDialog extends Stage {
 		Scene scene = new Scene(settingsPane, 1000, 800);
 		
 		setScene(scene);
+		setTitle("Settings");
 	}
 }

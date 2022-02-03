@@ -113,10 +113,9 @@ public class BrowsersFour extends Application {
 		}
 	}
 	
-	protected Menu createEditMenu() {
-		Menu menu = new Menu("Edit");
+	protected Menu createViewMenu() {
+		Menu menu = new Menu("View");
 		
-//		menu.getItems().add(createFavoritesItem());
 		menu.getItems().add(createSettingsItem());
 		
 		return menu;
@@ -138,7 +137,11 @@ public class BrowsersFour extends Application {
 				SettingsDialog dialog = new SettingsDialog(root);
 				
 				dialog.initOwner(b4Stage);
+				dialog.setTitle("BrowsersFour Settings");
+				
+				ticker.stop();
 				dialog.showAndWait();
+				ticker.start();
 			}
 			
 		});
@@ -166,7 +169,7 @@ public class BrowsersFour extends Application {
 	protected MenuBar createMenuBar() {
 		MenuBar menuBar = new MenuBar();
 		
-		menuBar.getMenus().add(createEditMenu());
+		menuBar.getMenus().add(createViewMenu());
 		
 		return menuBar;
 	}
