@@ -1,5 +1,6 @@
 package io.github.alantcote.browsersfour;
 
+import java.net.URL;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
@@ -7,6 +8,7 @@ import io.github.alantcote.browsersfour.settings.CategoryTreeItem;
 import io.github.alantcote.browsersfour.settings.SettingsDialog;
 import io.github.alantcote.clutilities.javafx.windowprefs.WindowPrefs;
 import javafx.application.Application;
+import javafx.application.HostServices;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -39,6 +41,12 @@ public class BrowsersFour extends Application {
 	}
 
 	public static final int BROWSER_COUNT = 4;
+
+	/**
+	 * The name of the resource used as Help>About dialog content.
+	 */
+	public static final String HELP_ABOUT_RESOURCE = "helpAbout.html";
+
 	public static long UPDATE_PERIOD = 5000; // update period im msecs
 
 	/**
@@ -53,6 +61,11 @@ public class BrowsersFour extends Application {
 	protected Preferences appPrefs = null;
 	protected Stage b4Stage;
 	protected BrowserPanel[] browser = new BrowserPanel[BROWSER_COUNT];
+
+	/**
+	 * The popup browser launcher.
+	 */
+	protected PopupBrowserLauncher browserLauncher = null;
 	protected Favorites favorites = null;
 	protected Stage stage;
 	protected Ticker ticker = new Ticker(new Updater(), UPDATE_PERIOD);
@@ -95,9 +108,9 @@ public class BrowsersFour extends Application {
 
 				appPrefs = windowPrefs.getPrefs();
 			} catch (BackingStoreException e) {
-				System.err.println("PathTreeViewDemo.start(): caught: " + e.getMessage());
+				System.err.println("BrowsersFour.start(): caught: " + e.getMessage());
 				e.printStackTrace();
-				System.err.println("PathTreeViewDemo.start(): continuing . . .");
+				System.err.println("BrowsersFour.start(): continuing . . .");
 			}
 
 			stageShow(primaryStage);
@@ -110,14 +123,44 @@ public class BrowsersFour extends Application {
 
 			ticker.start();
 		} catch (Exception e) {
+			System.err.println("BrowsersFour.start(): caught: " + e.getMessage());
 			e.printStackTrace();
+			System.err.println("BrowsersFour.start(): continuing . . .");
 		}
+	}
+
+	protected MenuItem createHelpAboutMenuItem() {
+		MenuItem helpAboutMenuItem = new MenuItem("About");
+
+		helpAboutMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				URL url = getClass().getResource(HELP_ABOUT_RESOURCE);
+
+				if (url != null) {
+					setupBrowserLauncher();
+
+					browserLauncher.openWebViewDialog(url.toExternalForm(), 300, 400);
+				}
+			}
+		});
+
+		return helpAboutMenuItem;
+	}
+
+	protected Menu createHelpMenu() {
+		Menu menu = new Menu("Help");
+
+		menu.getItems().add(createHelpAboutMenuItem());
+
+		return menu;
 	}
 
 	protected MenuBar createMenuBar() {
 		MenuBar menuBar = new MenuBar();
 
 		menuBar.getMenus().add(createViewMenu());
+		menuBar.getMenus().add(createHelpMenu());
 
 		return menuBar;
 	}
@@ -149,23 +192,6 @@ public class BrowsersFour extends Application {
 
 		return menuItem;
 	}
-
-//	protected MenuItem createFavoritesItem() {
-//		MenuItem menuItem = new MenuItem("Favorites");
-//		
-//		menuItem.setOnAction(new EventHandler<ActionEvent>() {
-//
-//			@Override
-//			public void handle(ActionEvent event) {
-//				ticker.stop();
-//				favorites.edit();
-//				ticker.start();
-//			}
-//			
-//		});
-//		
-//		return menuItem;
-//	}
 
 	protected Menu createViewMenu() {
 		Menu menu = new Menu("View");
@@ -244,6 +270,17 @@ public class BrowsersFour extends Application {
 	 */
 	protected Scene newScene(BorderPane root, double width, double height) {
 		return new Scene(root, width, height);
+	}
+
+	/**
+	 * Set up the browser launcher.
+	 */
+	protected void setupBrowserLauncher() {
+		if (browserLauncher == null) {
+			HostServices hostServices = getHostServices();
+
+			browserLauncher = new PopupBrowserLauncher(hostServices);
+		}
 	}
 
 	/**
