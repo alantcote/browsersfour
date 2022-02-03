@@ -28,7 +28,7 @@ public class BrowsersFour extends Application {
 
 			if (url != null) {
 //				System.err.println("Updater: loading " + url);
-				
+
 				browser[browserIndex++].load(url);
 			}
 
@@ -51,10 +51,12 @@ public class BrowsersFour extends Application {
 	}
 
 	protected Preferences appPrefs = null;
+	protected Stage b4Stage;
 	protected BrowserPanel[] browser = new BrowserPanel[BROWSER_COUNT];
 	protected Favorites favorites = null;
-	protected Stage b4Stage;
+	protected Stage stage;
 	protected Ticker ticker = new Ticker(new Updater(), UPDATE_PERIOD);
+
 	protected WindowPrefs windowPrefs = null;
 
 	/**
@@ -68,7 +70,6 @@ public class BrowsersFour extends Application {
 
 		return appPrefs;
 	}
-	protected Stage stage;
 
 	/**
 	 * {@inheritDoc}
@@ -76,7 +77,7 @@ public class BrowsersFour extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		b4Stage = primaryStage;
-		
+
 		try {
 			GridPane gridPane = inizBrowserPanels();
 			BorderPane root = new BorderPane();
@@ -91,7 +92,7 @@ public class BrowsersFour extends Application {
 
 			try {
 				windowPrefs = new WindowPrefs(BrowsersFour.class, primaryStage);
-				
+
 				appPrefs = windowPrefs.getPrefs();
 			} catch (BackingStoreException e) {
 				System.err.println("PathTreeViewDemo.start(): caught: " + e.getMessage());
@@ -112,18 +113,18 @@ public class BrowsersFour extends Application {
 			e.printStackTrace();
 		}
 	}
-	
-	protected Menu createViewMenu() {
-		Menu menu = new Menu("View");
-		
-		menu.getItems().add(createSettingsItem());
-		
-		return menu;
+
+	protected MenuBar createMenuBar() {
+		MenuBar menuBar = new MenuBar();
+
+		menuBar.getMenus().add(createViewMenu());
+
+		return menuBar;
 	}
-	
+
 	protected MenuItem createSettingsItem() {
 		MenuItem menuItem = new MenuItem("Settings");
-		
+
 		menuItem.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -131,24 +132,24 @@ public class BrowsersFour extends Application {
 				CategoryTreeItem root = CategoryTreeItem.createRootItem();
 				FavoritesCategory favesCat = new FavoritesCategory(favorites);
 				CategoryTreeItem favesItem = favesCat.newTreeItem();
-				
+
 				root.getChildCategories().add(favesItem);
-				
+
 				SettingsDialog dialog = new SettingsDialog(root);
-				
+
 				dialog.initOwner(b4Stage);
 				dialog.setTitle("BrowsersFour Settings");
-				
+
 				ticker.stop();
 				dialog.showAndWait();
 				ticker.start();
 			}
-			
+
 		});
-		
+
 		return menuItem;
 	}
-	
+
 //	protected MenuItem createFavoritesItem() {
 //		MenuItem menuItem = new MenuItem("Favorites");
 //		
@@ -165,13 +166,13 @@ public class BrowsersFour extends Application {
 //		
 //		return menuItem;
 //	}
-	
-	protected MenuBar createMenuBar() {
-		MenuBar menuBar = new MenuBar();
-		
-		menuBar.getMenus().add(createViewMenu());
-		
-		return menuBar;
+
+	protected Menu createViewMenu() {
+		Menu menu = new Menu("View");
+
+		menu.getItems().add(createSettingsItem());
+
+		return menu;
 	}
 
 	/**
