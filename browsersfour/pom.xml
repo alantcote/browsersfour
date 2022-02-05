@@ -2,9 +2,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>cotelab</groupId>
+	<groupId>io.github.alantcote</groupId>
 	<artifactId>browsersfour</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<description>A program to display and update 4 browsers periodically.</description>
 
@@ -35,7 +35,7 @@
 		<javafx.main.class>io.github.alantcote.browsersfour.BrowsersFour</javafx.main.class>
 		<main.class>${javafx.main.class}</main.class>
 		<!-- <javafx.classifier>win</javafx.classifier> -->
-		<openjfx.version>18-ea+8</openjfx.version>
+		<openjfx.version>18-ea+10</openjfx.version>
 	</properties>
 
 	<distributionManagement>
@@ -316,32 +316,10 @@
 	</profiles>
 
 	<dependencies>
-		<!--
-		-->
-		<dependency>
-			<groupId>net.bytebuddy</groupId>
-			<artifactId>byte-buddy</artifactId>
-			<version>1.12.6</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>cglib</groupId>
-			<artifactId>cglib-nodep</artifactId>
-			<version>3.3.0</version>
-			<scope>provided</scope>
-		</dependency>
-
 		<dependency>
 			<groupId>io.github.alantcote</groupId>
 			<artifactId>clutilities</artifactId>
-			<version>0.1.0-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-collections4</artifactId>
-			<version>4.4</version>
+			<version>0.2.0-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
@@ -394,27 +372,17 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.jmock</groupId>
-			<artifactId>jmock-imposters</artifactId>
-			<version>2.12.0</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jmock</groupId>
-			<artifactId>jmock-legacy</artifactId>
-			<version>2.12.0</version>
-		</dependency>
-
-		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.13.2</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>de.saxsys</groupId>
 			<artifactId>mvvmfx-testing-utils</artifactId>
 			<version>1.8.0</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>
