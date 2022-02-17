@@ -6,6 +6,9 @@ module alantcote.browsersfour {
 	requires javafx.graphics;
 	requires javafx.base;
 	requires java.prefs;
+	requires java.xml;
+	requires java.base;
+	requires jdk.xml.dom;
 	
     opens io.github.alantcote.browsersfour to javafx.fxml;
     

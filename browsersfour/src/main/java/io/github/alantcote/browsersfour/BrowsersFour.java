@@ -129,6 +129,32 @@ public class BrowsersFour extends Application {
 		}
 	}
 
+	protected MenuItem createFileImportMenuItem() {
+		MenuItem menuItem = new MenuItem("Import Favorites (URL list)");
+
+		menuItem.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				FavoritesImporter importer = new FavoritesImporter(stage);
+				ObservableList<String> imported = importer.importFromURLList();
+
+				if (imported != null) {
+					favorites.getFavorites().addAll(imported);
+				}
+			}
+		});
+
+		return menuItem;
+	}
+
+	protected Menu createFileMenu() {
+		Menu menu = new Menu("File");
+
+		menu.getItems().add(createFileImportMenuItem());
+
+		return menu;
+	}
+
 	protected MenuItem createHelpAboutMenuItem() {
 		MenuItem helpAboutMenuItem = new MenuItem("About");
 
@@ -159,6 +185,7 @@ public class BrowsersFour extends Application {
 	protected MenuBar createMenuBar() {
 		MenuBar menuBar = new MenuBar();
 
+		menuBar.getMenus().add(createFileMenu());
 		menuBar.getMenus().add(createViewMenu());
 		menuBar.getMenus().add(createHelpMenu());
 
