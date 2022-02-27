@@ -1,5 +1,5 @@
 module alantcote.browsersfour {
-	requires transitive clutilities;
+	requires transitive fxutilities;
     requires javafx.fxml;
 	requires javafx.web;
 	requires javafx.controls;

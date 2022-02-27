@@ -6,7 +6,7 @@ import java.util.prefs.Preferences;
 
 import io.github.alantcote.browsersfour.settings.CategoryTreeItem;
 import io.github.alantcote.browsersfour.settings.SettingsDialog;
-import io.github.alantcote.clutilities.javafx.windowprefs.WindowPrefs;
+import io.github.alantcote.fxutilities.javafx.windowprefs.WindowPrefs;
 import javafx.application.Application;
 import javafx.application.HostServices;
 import javafx.collections.ObservableList;
