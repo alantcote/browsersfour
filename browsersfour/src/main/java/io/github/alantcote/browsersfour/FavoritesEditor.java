@@ -200,6 +200,8 @@ public class FavoritesEditor extends Editor {
 		
 		favorites.clear();
 		favorites.addAll(editingFavorites);
+		
+		favoritesModel.updateFavoritesPrefs();
 
 		savingFavorites = false;
 		System.out.println("FavoritesEditor.updateFavoritesPrefs(): exit");
